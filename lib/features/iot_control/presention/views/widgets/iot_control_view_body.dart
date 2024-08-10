@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import '../../../../../core/widgets/custom_card.dart';
 
-bool _isSwitchOn = false;
+
+
+
 
 class IotControlViewBody extends StatefulWidget {
   const IotControlViewBody({super.key});
@@ -23,7 +25,7 @@ class _IotControlViewBodyState extends State<IotControlViewBody> {
               iconOn: Icons.lightbulb,
               iconOff: Icons.lightbulb,
               color: Colors.red,
-              text: 'Work',
+              text: 'red led',
               onSwitchChanged: (bool value) {
                 // Do something based on the switch value
                 print('Switch value changed: $value');
@@ -33,7 +35,7 @@ class _IotControlViewBodyState extends State<IotControlViewBody> {
               iconOn: Icons.lightbulb,
               iconOff: Icons.lightbulb,
               color: Colors.green,
-              text: 'Work',
+              text: 'green led',
               onSwitchChanged: (bool value) {
                 // Do something based on the switch value
                 print('Switch value changed: $value');
@@ -42,15 +44,19 @@ class _IotControlViewBodyState extends State<IotControlViewBody> {
         
           ],
         ),    CustomCard(
-              iconOn: Icons.lightbulb,
-              iconOff: Icons.lightbulb,
-              color: Colors.green,
-              text: 'Work',
+              iconOn:  Icons.flip_camera_android_rounded,
+              iconOff: Icons.mode_fan_off,
+              color: Colors.blue,
+              text: 'fan',
               onSwitchChanged: (bool value) {
                 // Do something based on the switch value
                 print('Switch value changed: $value');
               },
+              
             ),
+            SizedBox(
+              height: 300,
+            )
          
       ],
     ));
