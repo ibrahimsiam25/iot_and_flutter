@@ -4,6 +4,7 @@ import '../../../../../core/widgets/custom_card.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+
 class IotControlViewBody extends StatefulWidget {
   const IotControlViewBody({Key? key}) : super(key: key);
 
@@ -15,12 +16,18 @@ class _IotControlViewBodyState extends State<IotControlViewBody> {
   final Stream<QuerySnapshot> _usersStream =
       FirebaseFirestore.instance.collection('leds').snapshots();
   bool _switchValue = false;
-  
 
-  void _updateSwitchValue(QuerySnapshot snapshot)  {
-  
-    _switchValue = snapshot.docs.isNotEmpty ? snapshot.docs[0]['red'] : false;
-    print(_switchValue);
+  void _updateSwitchValue(bool value, String documentId) async {
+    try {
+      await FirebaseFirestore.instance.collection('leds').doc(documentId).update({
+        'red': value, // Send the updated value to Firestore
+      });
+      setState(() {
+        _switchValue = value; // Update local state
+      });
+    } catch (e) {
+      print('Failed to update data: $e');
+    }
   }
 
   @override
@@ -36,44 +43,25 @@ class _IotControlViewBodyState extends State<IotControlViewBody> {
           return const Center(child: CircularProgressIndicator());
         }
 
-        // Update switch value based on the snapshot data
-        _updateSwitchValue(snapshot.data!);
+        // Assume there's at least one document
+        final document = snapshot.data!.docs.isNotEmpty ? snapshot.data!.docs[0] : null;
 
-        return SafeArea(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Row(
-                children: [
-                  CustomCard(
-                    iconOn: Icons.lightbulb,
-                    iconOff: Icons.lightbulb,
-                    color: Colors.red,
-                    text: 'Red LED',
-                    value: _switchValue,
-                    onToggle: () => _updateSwitchValue(snapshot.data!),
-                  ),
-                  CustomCard(
-                    iconOn: Icons.lightbulb,
-                    iconOff: Icons.lightbulb,
-                    color: Colors.green,
-                    text: 'green led',
-                    value: _switchValue,
-                    onToggle: () => _updateSwitchValue(snapshot.data!),
-                  ),
-                ],
-              ),
-              CustomCard(
-                  iconOn: Icons.flip_camera_android_rounded,
-                  iconOff: Icons.mode_fan_off,
-                  color: Colors.blue,
-                  text: 'fan',
-                  value: _switchValue,
-                  onToggle: () => _updateSwitchValue(snapshot.data!)),
-                  SizedBox(height: 350),
-            ],
-          ),
-        );
+        if (document != null) {
+          _switchValue = document['red']; // Set initial switch value
+
+          return SafeArea(
+            child: CustomCard(
+              iconOn: Icons.lightbulb,
+              iconOff: Icons.lightbulb,
+              color: Colors.red,
+              text: 'Red LED',
+              value: _switchValue,
+              onToggle: () => _updateSwitchValue(!_switchValue, document.id), // Toggle and update
+            ),
+          );
+        }
+
+        return const Center(child: Text('No data available'));
       },
     );
   }
@@ -82,8 +70,39 @@ class _IotControlViewBodyState extends State<IotControlViewBody> {
 
 
 
-
-
+//  Column(
+//             crossAxisAlignment: CrossAxisAlignment.stretch,
+//             children: [
+//               Row(
+//                 children: [
+//                   CustomCard(
+//                     iconOn: Icons.lightbulb,
+//                     iconOff: Icons.lightbulb,
+//                     color: Colors.red,
+//                     text: 'Red LED',
+//                     value: _switchValue,
+//                     onToggle: () => _updateSwitchValue(snapshot.data!),
+//                   ),
+//                   CustomCard(
+//                     iconOn: Icons.lightbulb,
+//                     iconOff: Icons.lightbulb,
+//                     color: Colors.green,
+//                     text: 'green led',
+//                     value: _switchValue,
+//                     onToggle: () => _updateSwitchValue(snapshot.data!),
+//                   ),
+//                 ],
+//               ),
+//               CustomCard(
+//                   iconOn: Icons.flip_camera_android_rounded,
+//                   iconOff: Icons.mode_fan_off,
+//                   color: Colors.blue,
+//                   text: 'fan',
+//                   value: _switchValue,
+//                   onToggle: () => _updateSwitchValue(snapshot.data!)),
+//                   SizedBox(height: 350),
+//             ],
+//           ),
          
 
 
