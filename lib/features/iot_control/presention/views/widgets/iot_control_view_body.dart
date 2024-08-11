@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/material.dart';
 import '../../../../../core/widgets/custom_card.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-
 
 class IotControlViewBody extends StatefulWidget {
   const IotControlViewBody({Key? key}) : super(key: key);
@@ -13,17 +10,26 @@ class IotControlViewBody extends StatefulWidget {
 }
 
 class _IotControlViewBodyState extends State<IotControlViewBody> {
-  final Stream<QuerySnapshot> _usersStream =
-      FirebaseFirestore.instance.collection('leds').snapshots();
-  bool _switchValue = false;
+  final Stream<QuerySnapshot> _usersStream =FirebaseFirestore.instance.collection('iot_control').snapshots();
+  bool _redLed = false;
+ bool _greenLed = false;
+  bool _fan = false;
 
-  void _updateSwitchValue(bool value, String documentId) async {
+  void _updateSwitchValue(bool value, String documentId,String field) async {
     try {
-      await FirebaseFirestore.instance.collection('leds').doc(documentId).update({
-        'red': value, // Send the updated value to Firestore
-      });
+      await FirebaseFirestore.instance.collection('iot_control').doc(documentId).update({field: value,});
       setState(() {
-        _switchValue = value; // Update local state
+switch (field) {
+  case 'red':
+    _redLed = value;
+    break;
+  case 'green':
+    _greenLed = value;
+    break;
+  case 'fan':
+    _fan = value;
+    break;
+}
       });
     } catch (e) {
       print('Failed to update data: $e');
@@ -43,23 +49,48 @@ class _IotControlViewBodyState extends State<IotControlViewBody> {
           return const Center(child: CircularProgressIndicator());
         }
 
-        // Assume there's at least one document
-        final document = snapshot.data!.docs.isNotEmpty ? snapshot.data!.docs[0] : null;
+        final document =  snapshot.data ;
 
-        if (document != null) {
-          _switchValue = document['red']; // Set initial switch value
-
+        _fan = document!.docs[0]['fan'];
+         _redLed = document.docs[0]['red']; 
+         _greenLed = document.docs[0]['green'];
           return SafeArea(
-            child: CustomCard(
-              iconOn: Icons.lightbulb,
-              iconOff: Icons.lightbulb,
-              color: Colors.red,
-              text: 'Red LED',
-              value: _switchValue,
-              onToggle: () => _updateSwitchValue(!_switchValue, document.id), // Toggle and update
-            ),
+            child:  Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Row(
+                children: [
+                  CustomCard(
+                    iconOn: Icons.lightbulb,
+                    iconOff: Icons.lightbulb,
+                    color: Colors.red,
+                    text: 'Red LED',
+                    value: _redLed,
+                    onToggle: () => _updateSwitchValue(!_redLed, document.docs[0].id,"red"), 
+                  ),
+                  CustomCard(
+                    iconOn: Icons.lightbulb,
+                    iconOff: Icons.lightbulb,
+                    color: Colors.green,
+                    text: 'green led',
+                    value: _greenLed,
+                    onToggle: () => _updateSwitchValue(!_greenLed, document.docs[0].id,"green"), 
+                  ),
+                ],
+              ),
+              CustomCard(
+                  iconOn: Icons.flip_camera_android_rounded,
+                  iconOff: Icons.mode_fan_off,
+                  color: Colors.blue,
+                  text: 'fan',
+                  value: _fan,
+                  onToggle: () => _updateSwitchValue(!_fan, document.docs[0].id,"fan"),),
+                  SizedBox(height: 350),
+            ],
+          ),
+         
           );
-        }
+        
 
         return const Center(child: Text('No data available'));
       },
@@ -70,45 +101,4 @@ class _IotControlViewBodyState extends State<IotControlViewBody> {
 
 
 
-//  Column(
-//             crossAxisAlignment: CrossAxisAlignment.stretch,
-//             children: [
-//               Row(
-//                 children: [
-//                   CustomCard(
-//                     iconOn: Icons.lightbulb,
-//                     iconOff: Icons.lightbulb,
-//                     color: Colors.red,
-//                     text: 'Red LED',
-//                     value: _switchValue,
-//                     onToggle: () => _updateSwitchValue(snapshot.data!),
-//                   ),
-//                   CustomCard(
-//                     iconOn: Icons.lightbulb,
-//                     iconOff: Icons.lightbulb,
-//                     color: Colors.green,
-//                     text: 'green led',
-//                     value: _switchValue,
-//                     onToggle: () => _updateSwitchValue(snapshot.data!),
-//                   ),
-//                 ],
-//               ),
-//               CustomCard(
-//                   iconOn: Icons.flip_camera_android_rounded,
-//                   iconOff: Icons.mode_fan_off,
-//                   color: Colors.blue,
-//                   text: 'fan',
-//                   value: _switchValue,
-//                   onToggle: () => _updateSwitchValue(snapshot.data!)),
-//                   SizedBox(height: 350),
-//             ],
-//           ),
-         
 
-
-  // FirebaseFirestore.instance
-  //       .collection('leds')
-  //       .doc("SQpudz4SuueHbzYlQgmq")
-  //       .update({
-  //     'red': !_switchValue, // Toggle the current value
-  //   });
