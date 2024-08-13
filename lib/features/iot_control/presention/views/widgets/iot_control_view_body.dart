@@ -22,10 +22,10 @@ double potentiometer = 0;
   bool _hasSpeech = false;
   String _lastWords = '';
   @override
-// void initState() {
-//  super.initState();
-//   _initSpeechToText();
-// }
+void initState() {
+ super.initState();
+  _initSpeechToText();
+}
   Future<void> _initSpeechToText() async {
    _speechToText = SpeechToText();
   bool available = await _speechToText.initialize();
