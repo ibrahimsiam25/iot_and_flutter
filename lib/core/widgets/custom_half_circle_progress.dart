@@ -4,25 +4,17 @@ import 'package:flutter/material.dart';
 
 
 class CustomHalfCircleProgress extends StatelessWidget {
-  final double size;
+
   final double percentage;
 
-   CustomHalfCircleProgress({required this.size, required this.percentage});
+   CustomHalfCircleProgress({ required this.percentage});
 
   @override
   Widget build(BuildContext context) {
-    return CustomPaint(
-      size: Size(size, size / 2),
-      painter: HalfCircleProgressPainter(percentage: percentage),
-      child: Center(
-        child: Text(
-          '${percentage.toInt()}%',
-          style: TextStyle(
-            fontSize: size / 5,
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
-          ),
-        ),
+    return Expanded(
+      child: CustomPaint(
+        painter: HalfCircleProgressPainter(percentage: percentage),
+      
       ),
     );
   }
@@ -46,7 +38,7 @@ class HalfCircleProgressPainter extends CustomPainter {
       ..strokeWidth = size.width / 15
       ..strokeCap = StrokeCap.round;
 
-    final double radius = size.width / 2;
+    final double radius = size.width / 2.5;
     final double startAngle = pi;
     final double sweepAngle = (pi * (percentage / 100));
 

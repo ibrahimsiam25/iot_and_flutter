@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:speech_to_text/speech_to_text.dart';
 import '../../../../../core/widgets/custom_card.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:percent_indicator/circular_percent_indicator.dart';
+import 'package:iot_and_flutter/core/widgets/custom_half_circle_progress.dart';
 
 class IotControlViewBody extends StatefulWidget {
   const IotControlViewBody({Key? key}) : super(key: key);
@@ -17,8 +18,40 @@ class _IotControlViewBodyState extends State<IotControlViewBody> {
   bool _greenLed = false;
   bool _fan = false;
   double potentiometer = 0.0;
+  late SpeechToText _speechToText;
+  bool _hasSpeech = false;
+  String _lastWords = '';
+  @override
+void initState() {
+ super.initState();
+  _initSpeechToText();
+}
+  Future<void> _initSpeechToText() async {
+   _speechToText = SpeechToText();
+  bool available = await _speechToText.initialize();
+  if (available) {
+    setState(() {
+      _hasSpeech = false;
+    });
+  }
+  }
+  void _startListening() async {
+    _speechToText.listen(onResult: (result) {
+      setState(() {
+        _lastWords = result.recognizedWords;
+        _hasSpeech = true;
+      });
+    });
+  }
 
-  void _updateSwitchValue(bool value, String documentId, String field) async {
+  void _stopListening() async {
+    print(_lastWords) ;
+    _speechToText.stop();
+    setState(() {   
+      _hasSpeech = false;
+    });
+  }
+    void _updateSwitchValue(bool value, String documentId, String field) async {
     try {
       await FirebaseFirestore.instance
           .collection('iot_control')
@@ -98,12 +131,13 @@ class _IotControlViewBodyState extends State<IotControlViewBody> {
                 onToggle: () =>
                     _updateSwitchValue(!_fan, document.docs[0].id, "fan"),
               ),
-              CircularPercentIndicator(
-                  radius: 100,
-                  lineWidth: 20,
-                  percent: potentiometer,
-                  progressColor: Colors.blue,
-                  backgroundColor: Colors.grey),
+              Container(
+                  child: CustomHalfCircleProgress(percentage: potentiometer)),
+              SizedBox(
+                height: 50,
+              ),
+              Text(_lastWords,style: TextStyle(fontSize: 20,color: Colors.white),),
+              IconButton(onPressed: _hasSpeech ? _stopListening : _startListening, icon: Icon(Icons.mic, size: 80)),
             ],
           ),
         );

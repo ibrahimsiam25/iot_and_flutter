@@ -4,6 +4,10 @@
 <dict>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>Needed for converting speech to text </string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Needed for converting speech to text also </string>
 	<key>CFBundleDisplayName</key>
 	<string>Iot And Flutter</string>
 	<key>CFBundleExecutable</key>
