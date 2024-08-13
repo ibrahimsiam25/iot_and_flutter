@@ -1,88 +1,115 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:iot_and_flutter/features/iot_control/presention/manger/iot_control/iot_control_cubit.dart';
 import '../../../../../core/widgets/custom_card.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:percent_indicator/circular_percent_indicator.dart';
 
 class IotControlViewBody extends StatefulWidget {
-  const IotControlViewBody({super.key});
+  const IotControlViewBody({Key? key}) : super(key: key);
 
   @override
   State<IotControlViewBody> createState() => _IotControlViewBodyState();
 }
 
 class _IotControlViewBodyState extends State<IotControlViewBody> {
+  final Stream<QuerySnapshot> _usersStream =
+      FirebaseFirestore.instance.collection('iot_control').snapshots();
+  bool _redLed = false;
+  bool _greenLed = false;
+  bool _fan = false;
+  double potentiometer = 0.0;
+
+  void _updateSwitchValue(bool value, String documentId, String field) async {
+    try {
+      await FirebaseFirestore.instance
+          .collection('iot_control')
+          .doc(documentId)
+          .update({
+        field: value,
+      });
+      setState(() {
+        switch (field) {
+          case 'red':
+            _redLed = value;
+            break;
+          case 'green':
+            _greenLed = value;
+            break;
+          case 'fan':
+            _fan = value;
+            break;
+        }
+      });
+    } catch (e) {
+      print('Failed to update data: $e');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => IotControlCubit(),
-      child: StreamBuilder<QuerySnapshot>(
-        stream: context.read<IotControlCubit>().usersStream,
-        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-          if (snapshot.hasError) {
-            return const Center(child: Text('Something went wrong'));
-          }
+    return StreamBuilder<QuerySnapshot>(
+      stream: _usersStream,
+      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+        if (snapshot.hasError) {
+          return const Center(child: Text('Something went wrong'));
+        }
 
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          }
-          final document = snapshot.data;
-          context.read<IotControlCubit>().fan = document!.docs[0]['fan'];
-          context.read<IotControlCubit>().redLed = document.docs[0]['red'];
-          context.read<IotControlCubit>().greenLed = document.docs[0]['green'];
-          return SafeArea(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Row(
-                  children: [
-                    CustomCard(
-                      iconOn: Icons.lightbulb,
-                      iconOff: Icons.lightbulb,
-                      color: Colors.red,
-                      text: 'Red LED',
-                      value: context.read<IotControlCubit>().redLed,
-                      onToggle: () => context
-                          .read<IotControlCubit>()
-                          .updateSwitchValue(
-                              !context.read<IotControlCubit>().redLed,
-                              document.docs[0].id,
-                              "red"),
-                    ),
-                    CustomCard(
-                      iconOn: Icons.lightbulb,
-                      iconOff: Icons.lightbulb,
-                      color: Colors.green,
-                      text: 'green led',
-                      value: context.read<IotControlCubit>().greenLed,
-                      onToggle: () => context
-                          .read<IotControlCubit>()
-                          .updateSwitchValue(
-                              !context.read<IotControlCubit>().greenLed,
-                              document.docs[0].id,
-                              "green"),
-                    ),
-                  ],
-                ),
-                CustomCard(
-                  iconOn: Icons.flip_camera_android_rounded,
-                  iconOff: Icons.mode_fan_off,
-                  color: Colors.blue,
-                  text: 'fan',
-                  value: context.read<IotControlCubit>().fan,
-                  onToggle: () => context
-                      .read<IotControlCubit>()
-                      .updateSwitchValue(!context.read<IotControlCubit>().fan,
-                          document.docs[0].id, "fan"),
-                ),
-                const SizedBox(height: 350),
-              ],
-            ),
-          );
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        }
 
-          // return const Center(child: Text('No data available'));
-        },
-      ),
+        final document = snapshot.data;
+
+        _fan = document!.docs[0]['fan'];
+        _redLed = document.docs[0]['red'];
+        _greenLed = document.docs[0]['green'];
+        potentiometer = document.docs[1]['potentiometer'] / 100;
+        return SafeArea(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Row(
+                children: [
+                  CustomCard(
+                    iconOn: Icons.lightbulb,
+                    iconOff: Icons.lightbulb,
+                    color: Colors.red,
+                    text: 'Red LED',
+                    value: _redLed,
+                    onToggle: () => _updateSwitchValue(
+                        !_redLed, document.docs[0].id, "red"),
+                  ),
+                  CustomCard(
+                    iconOn: Icons.lightbulb,
+                    iconOff: Icons.lightbulb,
+                    color: Colors.green,
+                    text: 'green led',
+                    value: _greenLed,
+                    onToggle: () => _updateSwitchValue(
+                        !_greenLed, document.docs[0].id, "green"),
+                  ),
+                ],
+              ),
+              CustomCard(
+                iconOn: Icons.flip_camera_android_rounded,
+                iconOff: Icons.mode_fan_off,
+                color: Colors.blue,
+                text: 'fan',
+                value: _fan,
+                onToggle: () =>
+                    _updateSwitchValue(!_fan, document.docs[0].id, "fan"),
+              ),
+              CircularPercentIndicator(
+                  radius: 100,
+                  lineWidth: 20,
+                  percent: potentiometer,
+                  progressColor: Colors.blue,
+                  backgroundColor: Colors.grey),
+            ],
+          ),
+        );
+
+        return const Center(child: Text('No data available'));
+      },
     );
   }
 }
