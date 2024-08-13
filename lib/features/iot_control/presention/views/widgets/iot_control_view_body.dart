@@ -17,15 +17,15 @@ class _IotControlViewBodyState extends State<IotControlViewBody> {
   bool _redLed = false;
   bool _greenLed = false;
   bool _fan = false;
-  double potentiometer = 0.0;
+double potentiometer = 0;
   late SpeechToText _speechToText;
   bool _hasSpeech = false;
   String _lastWords = '';
   @override
-void initState() {
- super.initState();
-  _initSpeechToText();
-}
+// void initState() {
+//  super.initState();
+//   _initSpeechToText();
+// }
   Future<void> _initSpeechToText() async {
    _speechToText = SpeechToText();
   bool available = await _speechToText.initialize();
@@ -95,50 +95,89 @@ void initState() {
         _fan = document!.docs[0]['fan'];
         _redLed = document.docs[0]['red'];
         _greenLed = document.docs[0]['green'];
-        potentiometer = document.docs[1]['potentiometer'] / 100;
-        return SafeArea(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Row(
+        potentiometer = (document.docs[1]['potentiometer'] as int).toDouble();
+        return Container(
+          decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          colors: [
+            Color(0xff4d6c92),
+            Color(0xff1d1a30),
+            Color(0xff1d1a30),
+            Color(0xff1d1a30),
+            Color(0xff4d6c92),
+          ],
+          tileMode: TileMode.clamp,
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+      ),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+            child: SafeArea(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  CustomCard(
-                    iconOn: Icons.lightbulb,
-                    iconOff: Icons.lightbulb,
-                    color: Colors.red,
-                    text: 'Red LED',
-                    value: _redLed,
-                    onToggle: () => _updateSwitchValue(
-                        !_redLed, document.docs[0].id, "red"),
+                  Row(
+                    children: [
+                      CustomCard(
+                        iconOn: Icons.lightbulb,
+                        iconOff: Icons.lightbulb,
+                        color: Colors.red,
+                        text: 'Red LED',
+                        value: _redLed,
+                        onToggle: () => _updateSwitchValue(
+                            !_redLed, document.docs[0].id, "red"),
+                      ),
+                      CustomCard(
+                        iconOn: Icons.lightbulb,
+                        iconOff: Icons.lightbulb,
+                        color: Colors.green,
+                        text: 'Green LED',
+                        value: _greenLed,
+                        onToggle: () => _updateSwitchValue(
+                            !_greenLed, document.docs[0].id, "green"),
+                      ),
+                    ],
                   ),
                   CustomCard(
-                    iconOn: Icons.lightbulb,
-                    iconOff: Icons.lightbulb,
-                    color: Colors.green,
-                    text: 'green led',
-                    value: _greenLed,
-                    onToggle: () => _updateSwitchValue(
-                        !_greenLed, document.docs[0].id, "green"),
+                    iconOn: Icons.flip_camera_android_rounded,
+                    iconOff: Icons.mode_fan_off,
+                    color: Colors.blue,
+                    text: 'Fan',
+                    value: _fan,
+                    onToggle: () =>
+                        _updateSwitchValue(!_fan, document.docs[0].id, "fan"),
                   ),
+                   SizedBox(
+                    height: 10,
+                  ),
+                  Container(
+                      child: CustomHalfCircleProgress(percentage: potentiometer)),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Text(_lastWords,style: TextStyle(fontSize: 20,color: Colors.white),),
+                  IconButton(onPressed: _hasSpeech ? _stopListening : _startListening, icon: ShaderMask(
+                shaderCallback: (Rect bounds) {
+                  return LinearGradient(
+                    colors: [
+                      Color(0xff5ea0fe),
+                      Color(0xffa8e2ed),
+                    ],
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                  ).createShader(bounds);
+                },
+                child: Icon(
+                  Icons.mic,
+                  size: 80,
+                  color: Colors.white, // The color here is a base color that will be masked by the gradient
+                ),
+              )
+              )
                 ],
               ),
-              CustomCard(
-                iconOn: Icons.flip_camera_android_rounded,
-                iconOff: Icons.mode_fan_off,
-                color: Colors.blue,
-                text: 'fan',
-                value: _fan,
-                onToggle: () =>
-                    _updateSwitchValue(!_fan, document.docs[0].id, "fan"),
-              ),
-              Container(
-                  child: CustomHalfCircleProgress(percentage: potentiometer)),
-              SizedBox(
-                height: 50,
-              ),
-              Text(_lastWords,style: TextStyle(fontSize: 20,color: Colors.white),),
-              IconButton(onPressed: _hasSpeech ? _stopListening : _startListening, icon: Icon(Icons.mic, size: 80)),
-            ],
+            ),
           ),
         );
 

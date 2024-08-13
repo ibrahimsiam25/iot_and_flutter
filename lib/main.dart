@@ -18,6 +18,7 @@ class MyApp extends StatelessWidget {
     return const MaterialApp(
      onGenerateRoute: onGenerateRoute,
      initialRoute: IotControlView.routeName,
+      debugShowCheckedModeBanner: false,
     );
   }
 }

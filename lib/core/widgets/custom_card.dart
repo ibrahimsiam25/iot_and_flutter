@@ -1,5 +1,7 @@
+import 'dart:ffi';
 import 'package:flutter/material.dart';
 import 'package:flutter/material.dart';
+
 
 
 class CustomCard extends StatelessWidget {
@@ -23,27 +25,37 @@ class CustomCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Expanded(
-      child: Container(
-        height: MediaQuery.of(context).size.height / 4,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10),
-        ),
-        child: Card(
-          color: const Color(0xff363346),
-          elevation: 50,
-          shadowColor: const Color(0xFF373C59),
-          child: Padding(
-            padding: const EdgeInsets.all(10),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                _buildIcon(),
-                const SizedBox(height: 20), // Spacer replacement
-                _buildText(),
-                const SizedBox(height: 20), // Spacer replacement
-                _buildSwitch(),
-              ],
+      child: Card(
+     shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15.0), // Rounded corners
+            side: BorderSide(
+              color: Color.fromARGB(255, 134, 145, 207), // Border color
+              width: 2.0, // Border width
+              
             ),
+          ),
+        child: Container(
+          height: 200,
+        decoration: const BoxDecoration(
+            borderRadius: BorderRadius.all(Radius.circular(20)),
+            gradient: LinearGradient(
+              colors: [
+                Color(0xff5ea0fe),
+                Color(0xffa8e2ed),
+              ],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+            ),
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              _buildIcon(),
+              const SizedBox(height: 20), // Spacer replacement
+              _buildText(),
+              const SizedBox(height: 20), // Spacer replacement
+              _buildSwitch(),
+            ],
           ),
         ),
       ),
