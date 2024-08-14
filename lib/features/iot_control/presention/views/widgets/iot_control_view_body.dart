@@ -28,7 +28,7 @@ class _IotControlViewBodyState extends State<IotControlViewBody> {
     _initSpeechToText();
   }
   void controlByVoice(){
- if(_lastWords=='turn off the red light'){
+ if(_lastWords.contains('turn on red')){
    _updateSwitchValue(!_redLed, "red");                  
  }   else if(_lastWords=='turn on the red light'){
    _updateSwitchValue(!_redLed, "red");
