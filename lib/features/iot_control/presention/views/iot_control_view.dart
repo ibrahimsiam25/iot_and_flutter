@@ -6,6 +6,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../manger/green_led/green_led_cubit.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:iot_and_flutter/core/utils/service_locator.dart';
+import 'package:iot_and_flutter/features/iot_control/presention/manger/potentiometer/potentiometer_cubit.dart';
+
 
 class IotControlView extends StatelessWidget {
   const IotControlView({super.key});
@@ -25,6 +27,9 @@ class IotControlView extends StatelessWidget {
             BlocProvider(
             create: (context) => FanCubit(getIt.get<Stream<QuerySnapshot>>())..fetchData(),
           ),
+            BlocProvider(
+            create: (context) => PotentiometerCubit(getIt.get<Stream<QuerySnapshot>>())..fetchData(),  
+             )
           ],
           child:const IotControlViewBody(),
         ));

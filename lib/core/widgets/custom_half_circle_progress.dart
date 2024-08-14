@@ -2,7 +2,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 
 class CustomHalfCircleProgress extends StatelessWidget {
-  final double percentage;
+  final int  percentage;
 
   CustomHalfCircleProgress({required this.percentage});
 
@@ -17,7 +17,7 @@ class CustomHalfCircleProgress extends StatelessWidget {
 }
 
 class HalfCircleProgressPainter extends CustomPainter {
-  final double percentage;
+  final int percentage;
 
   HalfCircleProgressPainter({required this.percentage});
 

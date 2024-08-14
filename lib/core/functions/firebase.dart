@@ -30,6 +30,9 @@ Future<dynamic> fetchDataFromFirebase(String doc) async {
       case "fan":
         valueOfDoc = values['fan']['value'];
         break;
+      case "potentiometer":
+        valueOfDoc = values['potentiometer']['value'];
+        break;
     }
 
     print("emit initial state");
