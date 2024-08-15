@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../manger/speech_to_text/speech_to_text_cubit.dart';
 
+
 class SpeechToTextBlocBuilder extends StatelessWidget {
   const SpeechToTextBlocBuilder({super.key});
 
@@ -14,20 +15,20 @@ class SpeechToTextBlocBuilder extends StatelessWidget {
             if (state is SpeechListening || state is SpeechRecognized) {
               return Text(
                 (state as dynamic).recognizedWords,
-                style: TextStyle(
+                style:const TextStyle(
                   fontSize: 20,
                   color: Colors.white,
                 ),
                 textAlign: TextAlign.center,
               );
             } else {
-              return Text(
-                "",
+              return const Text(
+                "", style: TextStyle(fontSize: 20, color: Colors.white),
               );
             }
           },
         ),
-        SizedBox(
+       const SizedBox(
           height: 30,
         ),
         BlocBuilder<SpeechToTextCubit, SpeechToTextState>(
@@ -38,7 +39,7 @@ class SpeechToTextBlocBuilder extends StatelessWidget {
                     : context.read<SpeechToTextCubit>().startListening,
                 icon: ShaderMask(
                   shaderCallback: (Rect bounds) {
-                    return LinearGradient(
+                    return const LinearGradient(
                       colors: [
                         Color(0xff5ea0fe),
                         Color(0xffa8e2ed),
@@ -47,9 +48,9 @@ class SpeechToTextBlocBuilder extends StatelessWidget {
                       end: Alignment.bottomCenter,
                     ).createShader(bounds);
                   },
-                  child: Icon(
+                  child:const Icon(
                     Icons.mic,
-                    size: 80,
+                    size: 60,
                     color: Colors
                         .white, // The color here is a base color that will be masked by the gradient
                   ),

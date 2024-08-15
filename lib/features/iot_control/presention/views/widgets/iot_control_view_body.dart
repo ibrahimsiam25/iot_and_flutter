@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import '../../../../../core/functions/box_decoration.dart';
-import '../../../../../core/widgets/custom_half_circle_progress.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:iot_and_flutter/core/widgets/shimmer_continar.dart';
+import 'package:iot_and_flutter/features/iot_control/presention/manger/red_led/red_led_cubit.dart';
 import 'package:iot_and_flutter/features/iot_control/presention/views/widgets/fan_bloc_builder.dart';
 import 'package:iot_and_flutter/features/iot_control/presention/views/widgets/red_led_bloc_builder.dart';
 import 'package:iot_and_flutter/features/iot_control/presention/views/widgets/green_led_bloc_builder.dart';
@@ -12,25 +13,38 @@ class IotControlViewBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-      decoration: boxDecoration(),
-      child:const SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-             Row(
-              children: [
-                RedLedBlocBuilder(),
-                GreenLedBlocBuilder(),
-              ],
+    return BlocBuilder<RedLedCubit, RedLedState>(
+      builder: (context, state) {
+        if (state is RedLedLoading) {
+          return ShimmerContinar();
+        } else {
+          return const SafeArea(
+            child: SingleChildScrollView(
+              child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                child: Column(
+                  
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Row(
+                      children: [
+                        Expanded(child: RedLedBlocBuilder()),
+                        Expanded(child: GreenLedBlocBuilder()),
+                      ],
+                    ),
+                    FanBlocBuilder(),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    PotentiometerBlocBuilder(),
+                    SpeechToTextBlocBuilder()
+                  ],
+                ),
+              ),
             ),
-           FanBlocBuilder(),
-            PotentiometerBlocBuilder(),
-            SpeechToTextBlocBuilder()
-          ],
-        ),
-      ),
+          );
+        }
+      },
     );
   }
 }

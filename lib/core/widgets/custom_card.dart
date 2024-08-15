@@ -1,8 +1,4 @@
-import 'dart:ffi';
 import 'package:flutter/material.dart';
-import 'package:flutter/material.dart';
-
-
 
 class CustomCard extends StatelessWidget {
   const CustomCard({
@@ -24,39 +20,36 @@ class CustomCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: Card(
-     shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15.0), // Rounded corners
-            side: BorderSide(
-              color: Color.fromARGB(255, 134, 145, 207), // Border color
-              width: 2.0, // Border width
-              
-            ),
-          ),
-        child: Container(
-          height: 200,
+    return Card(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(15.0), // Rounded corners
+        side: const BorderSide(
+          color: Color.fromARGB(255, 134, 145, 207), // Border color
+          width: 2.0, // Border width
+        ),
+      ),
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 10),
         decoration: const BoxDecoration(
-            borderRadius: BorderRadius.all(Radius.circular(20)),
-            gradient: LinearGradient(
-              colors: [
-                Color(0xff5ea0fe),
-                Color(0xffa8e2ed),
-              ],
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-            ),
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              _buildIcon(),
-              const SizedBox(height: 20), // Spacer replacement
-              _buildText(),
-              const SizedBox(height: 20), // Spacer replacement
-              _buildSwitch(),
+          borderRadius: BorderRadius.all(Radius.circular(20)),
+          gradient: LinearGradient(
+            colors: [
+              Color(0xff5ea0fe),
+              Color(0xffa8e2ed),
             ],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
           ),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            _buildIcon(),
+            const SizedBox(height: 20), // Spacer replacement
+            _buildText(),
+            const SizedBox(height: 20), // Spacer replacement
+            _buildSwitch(),
+          ],
         ),
       ),
     );

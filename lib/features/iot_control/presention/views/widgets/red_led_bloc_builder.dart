@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../manger/red_led/red_led_cubit.dart';
 import '../../../../../core/functions/firebase.dart';
 import '../../../../../core/widgets/custom_card.dart';
+import 'package:iot_and_flutter/core/widgets/shimmer_continar.dart';
 
 
 
@@ -27,7 +28,8 @@ class RedLedBlocBuilder extends StatelessWidget {
         onToggle: () => updateValue(
      !state.redLed, "redLed"),
       );
-    } else{
+    } 
+     else{
       return Container();
     }
       },

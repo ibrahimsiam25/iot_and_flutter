@@ -13,7 +13,8 @@ class PotentiometerBlocBuilder extends StatelessWidget {
       builder: (context, state) {
         if (state is PotentiometerSuccess) {
           return CustomHalfCircleProgress(percentage: state.potentiometer);
-        } else {
+        }
+        else {
           return Container();
         }
       },  

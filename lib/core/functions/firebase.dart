@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-Map<String, dynamic> values = {};
 void updateValue(bool val, String doc) async {
   print("updating value $val + $doc");
   await FirebaseFirestore.instance.collection('iot_control').doc(doc).update({
@@ -8,6 +7,7 @@ void updateValue(bool val, String doc) async {
   });
 }
 
+Map<String, dynamic> values = {};
 Future<dynamic> fetchDataFromFirebase(String doc) async {
   var valueOfDoc;
   await FirebaseFirestore.instance
@@ -39,6 +39,3 @@ Future<dynamic> fetchDataFromFirebase(String doc) async {
   });
   return valueOfDoc;
 }
-
-
-

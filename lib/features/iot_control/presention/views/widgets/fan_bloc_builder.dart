@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../core/functions/firebase.dart';
 import '../../../../../core/widgets/custom_card.dart';
+import '../../../../../core/widgets/shimmer_continar.dart';
 import 'package:iot_and_flutter/features/iot_control/presention/manger/fan/fan_cubit.dart';
+
 
 
 class FanBlocBuilder extends StatelessWidget {
@@ -23,7 +25,8 @@ class FanBlocBuilder extends StatelessWidget {
             value: state.fan,
             onToggle: () => updateValue(!state.fan, "fan"),
           );
-        } else {
+        } 
+         else {
           return Container();
         }
       },

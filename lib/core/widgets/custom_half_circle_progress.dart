@@ -2,13 +2,15 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 
 class CustomHalfCircleProgress extends StatelessWidget {
-  final int  percentage;
+  final int percentage;
 
-  CustomHalfCircleProgress({required this.percentage});
+  const CustomHalfCircleProgress({required this.percentage});
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
+    return SizedBox(
+      width: 150, // fixed width
+      height: 150, // fixed height
       child: CustomPaint(
         painter: HalfCircleProgressPainter(percentage: percentage),
       ),
@@ -28,15 +30,18 @@ class HalfCircleProgressPainter extends CustomPainter {
       ..style = PaintingStyle.stroke
       ..strokeWidth = size.width / 15;
 
+    final Offset center = Offset(size.width / 2, size.height);
+    final double radius = size.width / 2.5;
+
     final Rect rect = Rect.fromCircle(
-      center: Offset(size.width / 2, size.height),
-      radius: size.width / 2.5,
+      center: center,
+      radius: radius,
     );
 
     final Gradient gradient = LinearGradient(
       colors: [
-        Color(0xff5ea0fe),
-        Color(0xffa8e2ed),
+        const Color(0xff5ea0fe),
+        const Color(0xffa8e2ed),
       ],
       begin: Alignment.topCenter,
       end: Alignment.bottomCenter,
@@ -48,13 +53,12 @@ class HalfCircleProgressPainter extends CustomPainter {
       ..strokeWidth = size.width / 15
       ..strokeCap = StrokeCap.round;
 
-    final double radius = size.width / 2.5;
     final double startAngle = pi;
-    final double sweepAngle = (pi * (percentage / 100));
+    final double sweepAngle = pi * (percentage / 100);
 
     // Draw the background arc
     canvas.drawArc(
-      Rect.fromCircle(center: Offset(size.width / 2, size.height), radius: radius),
+      Rect.fromCircle(center: center, radius: radius),
       startAngle,
       pi,
       false,
@@ -63,7 +67,7 @@ class HalfCircleProgressPainter extends CustomPainter {
 
     // Draw the gradient progress arc
     canvas.drawArc(
-      Rect.fromCircle(center: Offset(size.width / 2, size.height), radius: radius),
+      Rect.fromCircle(center: center, radius: radius),
       startAngle,
       sweepAngle,
       false,

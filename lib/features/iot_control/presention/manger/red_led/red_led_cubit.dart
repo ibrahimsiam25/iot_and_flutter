@@ -24,18 +24,13 @@ class RedLedCubit extends Cubit<RedLedState> {
             emit(RedLedSuccess(redLed: redLed));
             break;
         }
-        print(
-            "data--------------------------${docChange.doc.id}----- ${data!['value']}");
       }
     }
   }
 
-  
   void fetchData() async {
     emit(RedLedLoading());
-  redLed = await fetchDataFromFirebase( "redLed");
-       emit(RedLedSuccess(redLed: redLed));
+    redLed = await fetchDataFromFirebase("redLed");
+    emit(RedLedSuccess(redLed: redLed));
   }
-
-
 }
