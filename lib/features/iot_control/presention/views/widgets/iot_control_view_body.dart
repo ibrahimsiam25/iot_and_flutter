@@ -5,6 +5,7 @@ import 'package:iot_and_flutter/features/iot_control/presention/views/widgets/fa
 import 'package:iot_and_flutter/features/iot_control/presention/views/widgets/red_led_bloc_builder.dart';
 import 'package:iot_and_flutter/features/iot_control/presention/views/widgets/green_led_bloc_builder.dart';
 import 'package:iot_and_flutter/features/iot_control/presention/views/widgets/potentiometer_bloc_builder.dart';
+import 'package:iot_and_flutter/features/iot_control/presention/views/widgets/speech_to_text_bloc_builder.dart';
 
 class IotControlViewBody extends StatelessWidget {
   const IotControlViewBody({super.key});
@@ -26,6 +27,7 @@ class IotControlViewBody extends StatelessWidget {
             ),
            FanBlocBuilder(),
             PotentiometerBlocBuilder(),
+            SpeechToTextBlocBuilder()
           ],
         ),
       ),
